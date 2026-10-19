@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>Authorization</title>
+<style>
+  :root { --bg:#14091f; --card:#22123a; --text:#f1eaff; --muted:#b9a6d9; --accent:#d4a73c; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+  main { max-width:640px; margin:0 auto; padding:48px 16px; }
+  .card { background:var(--card); border:1px solid #3d2563; border-radius:14px; padding:20px; }
+  code { display:block; word-break:break-all; background:#0d0616; padding:12px; border-radius:8px; margin:12px 0; font-size:.95rem; }
+  button { background:var(--accent); color:#1a0d00; border:0; border-radius:8px; padding:10px 18px; font-size:1rem; cursor:pointer; }
+  .muted { color:var(--muted); font-size:.9rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Authorization</h1>
+  <div class="card" id="box"></div>
+</main>
+<script>
+  // The code is only shown on this page; nothing is sent anywhere.
+  var p = new URLSearchParams(location.search);
+  var box = document.getElementById("box");
+  var code = p.get("code"), err = p.get("error");
+  if (code) {
+    box.innerHTML = '<p>Copy this code into your bot server:</p><code id="c"></code>' +
+      '<button id="b">Copy</button><p class="muted">The code expires in about one minute and works only once.</p>' +
+      '<p dir="rtl" class="muted">انسخ الرمز وحطه بالسيرفر خلال دقيقة، يشتغل مرة وحدة بس.</p>';
+    document.getElementById("c").textContent = code;
+    document.getElementById("b").onclick = function () {
+      navigator.clipboard.writeText(code).then(function () { this.textContent = "Copied ✓"; }.bind(this));
+    };
+    history.replaceState(null, "", location.pathname);
+  } else if (err) {
+    box.textContent = "Authorization was not completed: " + err;
+  } else {
+    box.textContent = "No authorization code in this link.";
+  }
+</script>
+</body>
+</html>
